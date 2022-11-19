@@ -1,0 +1,47 @@
+<center>
+<h1> Application de prediction du vainqueur de la coupe du monde  </h1>
+
+<b> Ajouter votre prédiction</b>
+
+<form action="/save" method="POST">
+	
+	<label for="username">Nom d'utilisateur</label>
+	<input name="username" id="username" required><br><br>
+
+	<label for="place">Pays d'origine</label>
+	<input name="place" id="place" required><br><br>
+
+	<label for="country">Pays vainquer de la coupe</label>
+	<input name="country" id="country" required><br><br>
+
+	<input type="submit" value="Save">
+
+</form>
+
+<b>saisissez votre nom pour voir votre prédiction</b>
+<form action="/get" method="POST">
+	<label for="username">Nom d'utilisateur</label>
+	<input name="username" id="username" required><br><br>
+	<input type="submit" value="Submit">
+</form>
+
+{% if get %}
+<font color="blue">La prediction de <b>{{username}}</b> qui vient <b>{{place}}</b> est : <b>{{country}}</b> vainqueur</font>
+<small>{{msg}}</small>
+{% endif %}
+
+{% if no_record %}
+<font color="red">{{msg}}</font>
+{% endif %}
+
+{% if user_exists %}
+<font color="red">le nom d'utilisateur <b>{{username}}</b> qui vient de <b>{{place}}</b> a deja predis la victoire de <b>{{country}}</b></font>
+<small>{{msg}}</small>
+{% endif %}
+
+{% if saved %}
+<font color="green"> <b>{{username}}</b>Votre prediction est bien enregistré !!!</font>
+{% endif %}
+
+</center>
+
