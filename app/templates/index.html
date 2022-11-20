@@ -1,60 +1,244 @@
-<center>
-<h1> Application de prediction du vainqueur de la coupe du monde  </h1>
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8"/>
+		<title>Prediction CDM</title>
+		<script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+		
+	</head>
+	<body>
+		
+		<header>
+			<center>
+			<h1> Application de prediction du vainqueur de la coupe du monde  </h1>
+			</center>
+		</header>
 
-<b> Ajouter votre prédiction</b>
+		<div class="form1">
+			<span class="form__title">Ajouter votre prédiction</span>
+			<form action="/save" method="post">
+				<div class="form__input">
+					<i class="ri-user-line"></i>
+					<input type="text" name="username" id="username" placeholder="Nom d'utilisateur">
+					<span class="bar"></span>
+				</div>
+				<div class="form__input">
+					<i class="ri-suitcase-line"></i>
+					<input type="text" name="place" id="place" placeholder="Pays d'origine">
+					<span class="bar"></span>
+				</div>
+				<div class="form__input">
+					<i class="ri-football-line"></i>
+					<input type="text" name="country" id="country" placeholder="Pays vainqueur de la coupe">
+					<span class="bar"></span>
+				</div>
+				<button type="submit" class="form__button">Sauvegarder</button>
+			</form>
+			<div class="sauvegarde">
+				{% if user_exists %}
+				<font color="red">Le nom d'utilisateur <b>{{username}}</b>a déjà été utilisé <b>{{msg}}</b> </font>
+				
+				{% endif %}
+				{% if saved %}
+				<font color="#8A1538"> <b>{{username}}: </b>Votre prédiction est bien enregistrée !!!</font>
+				{% endif %}
 
-<form action="/save" method="POST">
-	
-	<label for="username">Nom d'utilisateur</label>
-	<input name="username" id="username" required><br><br>
+			</div>
+		</div>
+		<div class="form2">
+			<span class="form__title">Retrouver votre prédiction</span>
+			<form action="/get" method="POST">
+				<div class="form__input">
+					<i class="ri-user-line"></i>
+					<input type="text" name="username" id="username" placeholder="Nom d'utilisateur">
+					<span class="bar"></span>
+				</div>
+				<button type="submit" class="form__button">Soumettre</button>
+			</form>
+			<div class="prediction">
+				{% if get %}
+				<font color="#8A1538">La prediction de <b>{{username}}</b> qui vient de <b>{{place}}</b> est : <b>{{country}}</b> vainqueur  <b>{{msg}}</b></font>
+				{% endif %}
+				{% if no_record %}
+				<font color="red">{{msg}}</font>
+				{% endif %}
 
-	<label for="place">Pays d'origine</label>
-	<input name="place" id="place" required><br><br>
+			</div>
+		</div>
 
-	<label for="country">Pays vainqueur de la coupe</label>
-	<input name="country" id="country" required><br><br>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			html{
+				font-size: 10px;
+				font-family: 'Poppins', sans-serif;
+			}
+			body{
+				font-size: 1.6rem;
+				background-color: #ece7e6;
+			}
+			.form1 {
+				position: relative;
+				top: 0;
+				left: 10rem;
+				width: 40rem;
+				padding: 10rem 0;
+				color: #fff;
+				background-color: #fff;
+				border-radius: 1rem;
+				box-shadow: 0 1px 1rem rgba(0, 0, 0, .1);
+				
+			}
+			.form2{
+				position: relative;
+				top: -49rem;
+				left: 80rem;
+				width: 40rem;
+				padding: 10rem 0;
+				color: #fff;
+				background-color: #fff;
+				border-radius: 1rem;
+				box-shadow: 0 1px 1rem rgba(0, 0, 0, .1);
+				
+			}
 
-	<input type="submit" value="Enregistrer">
+			.form1::before{
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 10rem;
+				background: linear-gradient(to left, #fff, #8A1538);
+				border-radius: 1rem 1rem 100% 100%;
+			}
+			.form2::before{
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 10rem;
+				background: linear-gradient(to left, #fff, #8A1538);
+				border-radius: 1rem 1rem 100% 100%;
+			}
+			.form__title{
+				position: absolute;
+				top: 3.5rem;
+				left: 50%;
+				transform: translateX(-50%);
+				font-size: 2.5rem;
+				color: #000;
+			}
+			.form1>form{
+				padding: 2.5rem;
+				background-color: inherit;
+			}
+			.form2>form{
+				padding: 2.5rem;
+				background-color: inherit;
+			}
+			.form__input{
+				position: relative;
+				display: flex;
+				align-items: baseline;
+				margin: 0 auto;
+				
+			}
+			.form__input .ri-user-line{
+				font-size: 2rem;
+				margin-right: 1rem;
+				color: #8A1538;
+				content: url('https://api.iconify.design/ri/user-line.svg');
+			}
+			.form__input .ri-suitcase-line{
+				font-size: 2rem;
+				margin-right: 1rem;
+				color: #8A1538;
+				content: url('https://api.iconify.design/ri/suitcase-line.svg');
+			}
+			.form__input .ri-football-line{
+				font-size: 2rem;
+				margin-right: 1rem;
+				color: #8A1538;
+				content: url('https://api.iconify.design/ri/football-line.svg');
+			}
 
-</form>
+			.form__input input{
+				position: relative;
+				width: 100%;
+				font: inherit;
+				padding: 1rem 0;
+				margin-top: .5rem;
+				border: none;
+				outline: none;
+			}
+			.form__input .bar{
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, .1);
+				width: 100%;
+				height: 1px;
+			}
+			.form__input .bar::before{
+				content: "";
+				position: absolute;
+				background-color: #8A1538;
+				width: 100%;
+				height: 2px;
+				transform: scaleX(0);
+				transform-origin: left;
+				transition: transform .5s;
+			}
+			.form__input>input:focus+.bar::before{
+				transform: scaleX(1)
+			}
+			.form__button{
+				display: block;
+				margin: 2.5rem auto 3rem;
+				padding: 1rem 5rem;
+				background: linear-gradient(to left, #fff, #8A1538);
+				color: #000;
+				font: inherit;
+				border: .5rem solid #fff;
+				outline: none;
+				cursor: pointer;
+				border-radius: 3rem;
+			}
+			.form__button:hover{
+				background: linear-gradient(to right, #fff, #8A1538);
+			}
+			@media screen and (min-width: 43.75em){
+				.form1::before {
+					height: 30rem;
+				}
+				.form__title{
+					left: 10rem;
+					transform: none;
+				}
+				.form1>form{
+					transform: translateX(10rem);
+					border-radius: inherit;
+					box-shadow: inherit;
+				}
+				.form2>form{
+					transform: translateX(10rem);
+					border-radius: inherit;
+					box-shadow: inherit;
+				}
+			}
+			header{
+				margin-bottom: 3rem;
+				font-style: oblique;
+				background: linear-gradient(to left, #fff, #8A1538);
+				border-radius: 1rem 1rem 100% 100%;
+				height: 5rem;
+			}
+		</style>
+	</body>
 
-<b>Saisissez votre nom pour voir votre prédiction</b>
-<form action="/get" method="POST">
-	<label for="username">Nom d'utilisateur</label>
-	<input name="username" id="username" required><br><br>
-	<input type="submit" value="Voir">
-</form> 
-
-<!--On affiche les resultat ici en fonction de la situation , on recupere la valeur de retour avec des conditions-->
-
-{% if get %}
-<font color="blue">La prediction de <b>{{username}}</b> qui nous vient de <b>{{place}}</b> est : <b>{{country}}</b> vainqueur</font>
-<small>{{msg}}</small>
-{% endif %}
-
-{% if no_record %}
-<font color="red">{{msg}}</font>
-{% endif %}
-
-{% if user_exists %}
-<font color="red">Le nom d'utilisateur <b>{{username}}</b> qui vient de <b>{{place}}</b> a déja predis la victoire de <b>{{country}}</b></font>
-<small>{{msg}}</small>
-{% endif %}
-
-{% if saved %}
-<font color="green"> <b>{{username}}</b>Votre prediction est bien enregistré avec succés !!!</font>
-{% endif %}
-
-</center>
-
-<!--On ajoute une option pour pouvoir regarder les gens qui ont déja utilisé l'application -->
-<br>
-<a href="/keys">Voir les utilisateurs </a>
-{% if keys %}
-	<h2>Utilisateurs </h2>
-	<ul>
-	{% for username in usernames %}
-		<li>{{username}}</li>
-	{% endfor %}
-	</ul>
-{% endif %}
+</html>
