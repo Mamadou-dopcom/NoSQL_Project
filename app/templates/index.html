@@ -14,19 +14,21 @@
 	<label for="country">Pays vainqueur de la coupe</label>
 	<input name="country" id="country" required><br><br>
 
-	<input type="submit" value="Save">
+	<input type="submit" value="Enregistrer">
 
 </form>
 
-<b>saisissez votre nom pour voir votre prédiction</b>
+<b>Saisissez votre nom pour voir votre prédiction</b>
 <form action="/get" method="POST">
 	<label for="username">Nom d'utilisateur</label>
 	<input name="username" id="username" required><br><br>
-	<input type="submit" value="Submit">
-</form>
+	<input type="submit" value="Voir">
+</form> 
+
+<!--On affiche les resultat ici en fonction de la situation , on recupere la valeur de retour avec des conditions-->
 
 {% if get %}
-<font color="blue">La prediction de <b>{{username}}</b> qui vient <b>{{place}}</b> est : <b>{{country}}</b> vainqueur</font>
+<font color="blue">La prediction de <b>{{username}}</b> qui nous vient de <b>{{place}}</b> est : <b>{{country}}</b> vainqueur</font>
 <small>{{msg}}</small>
 {% endif %}
 
@@ -35,13 +37,24 @@
 {% endif %}
 
 {% if user_exists %}
-<font color="red">le nom d'utilisateur <b>{{username}}</b> qui vient de <b>{{place}}</b> a deja predis la victoire de <b>{{country}}</b></font>
+<font color="red">Le nom d'utilisateur <b>{{username}}</b> qui vient de <b>{{place}}</b> a déja predis la victoire de <b>{{country}}</b></font>
 <small>{{msg}}</small>
 {% endif %}
 
 {% if saved %}
-<font color="green"> <b>{{username}}</b>Votre prediction est bien enregistré !!!</font>
+<font color="green"> <b>{{username}}</b>Votre prediction est bien enregistré avec succés !!!</font>
 {% endif %}
 
 </center>
 
+<!--On ajoute une option pour pouvoir regarder les gens qui ont déja utilisé l'application -->
+<br>
+<a href="/keys">Voir les utilisateurs </a>
+{% if keys %}
+	<h2>Utilisateurs </h2>
+	<ul>
+	{% for username in usernames %}
+		<li>{{username}}</li>
+	{% endfor %}
+	</ul>
+{% endif %}

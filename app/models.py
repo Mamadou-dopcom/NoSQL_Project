@@ -1,3 +1,4 @@
+#C'est la classe qui nous permet de declarer tout nos base de données 
 from flask_sqlalchemy import SQLAlchemy 
 
 db = SQLAlchemy()
