@@ -10,7 +10,7 @@ from models import db, UserFavs
 
 db.init_app(app)
 with app.app_context():
-    # To create / use database mentioned in URI
+    # Pour créer / utiliser la base de données mentionnée dans l'URI
     db.create_all()
     db.session.commit()
 
@@ -26,13 +26,13 @@ def save():
     place = str(request.form['place']).lower()
     country = str(request.form['country']).lower()
 
-    # check if data of the username already exists in the redis
+    # vérifier si les données du nom d'utilisateur existent déjà dans le redis
     if red.hgetall(username).keys():
-        print("hget username:", red.hgetall(username))
-        # return a msg to the template, saying the user already exists(from redis)
+        print("hget nom d'utilisateur:", red.hgetall(username))
+        # renvoie un message au template, indiquant que l'utilisateur existe déjà (à partir de redis)
         return render_template('index.html', user_exists=1, msg='(From Redis)', username=username, place=red.hget(username,"place").decode('utf-8'), country=red.hget(username,"country").decode('utf-8'))
 
-    # if not in redis, then check in db
+    # si ce n'est pas dans redis, alors on vérifie dans la base de données postgres
     elif len(list(red.hgetall(username)))==0:
         record =  UserFavs.query.filter_by(username=username).first()
         print("Records fecthed from db:", record)
@@ -40,27 +40,24 @@ def save():
         if record:
             red.hset(username, "place", place)
             red.hset(username, "country", country)
-            # return a msg to the template, saying the user already exists(from database)
+            # retourne un msg au template, disant que l'utilisateur existe déjà (depuis la base de données)
             return render_template('index.html', user_exists=1, msg='(From DataBase)', username=username, place=record.place, country=record.country)
 
-    # if data of the username doesnot exist anywhere, create a new record in DataBase and store in Redis also
-    # create a new record in DataBase
+    # si les données du nom d'utilisateur n'existent nulle part, on crée un nouvel enregistrement dans la base de données et stockez-le également dans Redis
+    # créer un nouvel enregistrement dans la base de données
     new_record = UserFavs(username=username, place=place, country=country)
     db.session.add(new_record)
     db.session.commit()
 
-    # store in Redis also
+    # enregistrer dans Redis aussi
     red.hset(username, "place", place)
     red.hset(username, "country", country)
 
-    # cross-checking if the record insertion was successful into database
+    # vérification croisée de la réussite de l'insertion de l'enregistrement dans la base de données
     record =  UserFavs.query.filter_by(username=username).first()
-    print("Records fetched from db after insert:", record)
+    print("Enregistrements récupérés a partir de la base de données postgres après l'insertion :", record)
 
-    # cross-checking if the insertion was successful into redis
-    print("key-values from redis after insert:", red.hgetall(username))
-
-    # return a success message upon saving
+    # renvoie un message de réussite lors de la sauvegarde
     return render_template('index.html', saved=1, username=username, place=red.hget(username, "place").decode('utf-8'), country=red.hget(username, "country").decode('utf-8'))
 
 @app.route("/keys", methods=['GET'])
@@ -83,8 +80,8 @@ def get():
 		record = UserFavs.query.filter_by(username=username).first()
 		print("GET Record:", record)
 		if not record:
-			print("No data in redis or db")
-			return render_template('index.html', no_record=1, msg=f"Record not yet defined for {username}")
+			print("Pas cette donnée dans redis ou postgres")
+			return render_template('index.html', no_record=1, msg=f"Enregistrement non encore fait pour {username}")
 		red.hset(username, "place", record.place)
 		red.hset(username, "country", record.country)
 		return render_template('index.html', get=1, msg="(From DataBase)",username=username, place=record.place, country=record.country)
